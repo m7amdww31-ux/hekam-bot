@@ -13,12 +13,12 @@ logging.basicConfig(
 logger = logging.getLogger("hekam-bot")
 
 # ===== الإعدادات (من متغيرات البيئة على Railway) =====
-TOKEN = os.getenv("DISCORD_TOKEN")                       # توكن البوت (إجباري)
-QUOTE_CHANNEL_ID = os.getenv("QUOTE_CHANNEL_ID")         # ID قناة الإرسال التلقائي (اختياري)
-INTERVAL_MINUTES = int(os.getenv("INTERVAL_MINUTES", "180"))  # كل كم دقيقة يرسل تلقائياً
+TOKEN = os.getenv("DISCORD_TOKEN")
+QUOTE_CHANNEL_ID = os.getenv("QUOTE_CHANNEL_ID")
+INTERVAL_MINUTES = int(os.getenv("INTERVAL_MINUTES", "180"))
 
 PREFIX = "#"
-GOLD = 0xE9C46A  # لون ذهبي يناسب ثيم "ميدنايت رويال"
+GOLD = 0xE9C46A
 
 # ===== تحميل الاقتباسات =====
 def load_quotes():
@@ -30,11 +30,10 @@ logger.info("تم تحميل %d اقتباس", len(QUOTES))
 
 # ===== إعداد البوت =====
 intents = discord.Intents.default()
-intents.message_content = True  # لازم تفعّلينه من بوابة المطورين أيضاً
+intents.message_content = True
 
 bot = commands.Bot(command_prefix=PREFIX, intents=intents, help_command=None)
 
-# قناة يتم ضبطها وقت التشغيل عبر الأمر #قناة (مؤقتة حتى إعادة التشغيل)
 runtime_channel_id = None
 
 
@@ -51,16 +50,11 @@ def random_quote(category=None):
     return random.choice(QUOTES)
 
 
-def make_embed(quote):
+def format_quote(quote):
+    # نص عادي عشان يبيّن كامل في إشعار الجوال
     text = quote["text"]
     author = quote.get("author") or "غير معروف"
-    embed = discord.Embed(
-        description="### \u201c{}\u201d".format(text),
-        color=GOLD,
-    )
-    embed.set_author(name="\U0001F319 حكمة")
-    embed.set_footer(text="\u2014 {}".format(author))
-    return embed
+    return "\U0001F319 **\u00ab{}\u00bb**\n\u2014 {}".format(text, author)
 
 
 def current_channel_id():
@@ -88,7 +82,7 @@ async def send_auto_quote():
             logger.warning("ما قدرت أوصل للقناة %s: %s", channel_id, e)
             return
     try:
-        await channel.send(embed=make_embed(random_quote()))
+        await channel.send(format_quote(random_quote()))
     except Exception as e:
         logger.warning("فشل الإرسال التلقائي: %s", e)
 
@@ -118,7 +112,7 @@ async def hekma(ctx, *, category: str = None):
         cats = "، ".join(all_categories())
         await ctx.send("ما لقيت تصنيف بهذا الاسم \U0001F605\nالتصنيفات المتاحة: {}".format(cats))
         return
-    await ctx.send(embed=make_embed(quote))
+    await ctx.send(format_quote(quote))
 
 
 @bot.command(name="قناة")
