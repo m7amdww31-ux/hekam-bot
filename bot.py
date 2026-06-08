@@ -18,7 +18,7 @@ QUOTE_CHANNEL_ID = os.getenv("QUOTE_CHANNEL_ID")         # ID قناة الحِ�
 INTERVAL_MINUTES = int(os.getenv("INTERVAL_MINUTES", "180"))  # كل كم دقيقة ترسل الحِكَم
 
 QUESTION_CHANNEL_ID = os.getenv("QUESTION_CHANNEL_ID")   # ID قناة الأسئلة الفلسفية (اختياري)
-QUESTION_INTERVAL_MINUTES = int(os.getenv("QUESTION_INTERVAL_MINUTES", "60"))  # كل كم دقيقة ترسل الأسئلة
+QUESTION_INTERVAL_MINUTES = int(os.getenv("QUESTION_INTERVAL_MINUTES", "1440"))  # كل كم دقيقة ترسل الأسئلة (1440 = كل 24 ساعة)
 
 PREFIX = "#"
 GOLD = 0xE9C46A  # لون ذهبي يناسب ثيم "ميدنايت رويال"
@@ -87,7 +87,7 @@ def format_quote(quote):
 
 def format_question(q):
     text = q["text"]
-    author = q.get("author") or "سؤال فلسفي"
+    author = q.get("author") or "السير جود"
     return "\U0001F914 **سؤال فلسفي:**\n\u00ab{}\u00bb\n\u2014 {}".format(text, author)
 
 
